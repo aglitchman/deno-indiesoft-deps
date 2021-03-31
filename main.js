@@ -1,5 +1,8 @@
 // Requires:
 // - env variable GITLAB_API_TOKEN
+
+import { createHash } from "https://deno.land/std@0.91.0/hash/mod.ts";
+
 function error(status, err) {
   return new Response(err, {
     status: status,
@@ -44,10 +47,10 @@ async function handleRequest(request) {
     );
   }
 
-  const zip = await archiveResp.buffer();
+  const zip = await archiveResp.arrayBuffer();
   const etag =
     archiveResp.headers.get("ETag") ||
-    '"' + crypto.createHash("sha1").update(zip).digest("hex") + '"';
+    '"' + createHash("sha1").update(zip).toString() + '"';
   return new Response(zip, {
     headers: {
       "content-type": "application/zip",
