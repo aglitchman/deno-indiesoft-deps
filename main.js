@@ -18,9 +18,12 @@ async function handleRequest(request) {
 
   if (pathname == "/") {
     return new Response(
-      parseMarkdown(
-        `Powered by the awesomest **[Deno Deploy](https://deno.com/deploy/docs)**.`
-      ),
+      `<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.4/tailwind.min.css" rel="stylesheet">` +
+        `<div class="px-3 py-3">` +
+        parseMarkdown(
+          `## Made with the awesomest **[Deno Deploy](https://deno.com/deploy/docs)**.`
+        ) +
+        `</div>`,
       {
         headers: {
           "content-type": "text/html; charset=UTF-8",
