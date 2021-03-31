@@ -29,12 +29,12 @@ async function handleRequest(request) {
     );
   }
 
-  const projectIdMatch = pathname.match(/\d+/g);
+  let projectIdMatch = pathname.match(/\d+/g);
   if (!projectIdMatch) {
     return error(400, "No Project ID");
   }
 
-  const id = projectIdMatch[0];
+  const id = projectIdMatch.pop();
 
   let sha = searchParams.get("sha") || "";
   if (sha) {
@@ -57,11 +57,11 @@ async function handleRequest(request) {
   if (contentType.indexOf("zip") < 0) {
     if (contentType.indexOf("json") > -1) {
       const json = JSON.stringify(await archiveResp.json());
-      return error(500, `Something wrong ${archiveResp.status}, ${json}`);
+      return error(500, `Something wrong (${archiveResp.status}): ${json}`);
     } else {
       return error(
         500,
-        `Invalid response ${archiveResp.status}, ${contentType}`
+        `Invalid response (${archiveResp.status}): ${contentType}`
       );
     }
   }
