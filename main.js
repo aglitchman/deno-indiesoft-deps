@@ -55,10 +55,15 @@ async function handleRequest(request) {
 
   const contentType = archiveResp.headers.get("Content-Type") || "";
   if (contentType.indexOf("zip") < 0) {
-    return error(
-      500,
-      `Invalid GitLab response ${archiveResp.status}, ${contentType}`
-    );
+    if (contentType.indexOf("json") > -1) {
+      const json = JSON.stringify(await archiveResp.json());
+      return error(500, `Something wrong ${archiveResp.status}, ${json}`);
+    } else {
+      return error(
+        500,
+        `Invalid response ${archiveResp.status}, ${contentType}`
+      );
+    }
   }
 
   const zip = await archiveResp.arrayBuffer();
