@@ -2,6 +2,7 @@
 // - env variable GITLAB_API_TOKEN
 
 import { createHash } from "https://deno.land/std@0.91.0/hash/mod.ts";
+import { parseMarkdown } from "https://deno.land/x/markdown_wasm/mod.ts";
 
 function error(status, err) {
   return new Response(err, {
@@ -14,6 +15,19 @@ function error(status, err) {
 
 async function handleRequest(request) {
   const { pathname, searchParams } = new URL(request.url);
+
+  if (pathname == "/") {
+    return new Response(
+      parseMarkdown(
+        `Powered by the awesomest **[Deno Deploy](https://deno.com/deploy/docs)**.`
+      ),
+      {
+        headers: {
+          "content-type": "text/plain",
+        },
+      }
+    );
+  }
 
   const projectIdMatch = pathname.match(/\d+/g);
   if (!projectIdMatch) {
