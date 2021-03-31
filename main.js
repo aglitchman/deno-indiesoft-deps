@@ -1,11 +1,20 @@
 // Requires:
 // - env variable GITLAB_API_TOKEN
+function error(status, err) {
+  return new Response(err, {
+    status: status,
+    headers: {
+      "content-type": "text/plain",
+    },
+  });
+}
+
 async function handleRequest(request) {
   const { pathname, searchParams } = new URL(request.url);
 
   const projectIdMatch = pathname.match(/\d+/g);
   if (!projectIdMatch) {
-    throw new Error("No Project ID");
+    return error("No Project ID");
   }
 
   const id = projectIdMatch[0];
@@ -17,7 +26,7 @@ async function handleRequest(request) {
 
   const token = Deno.env.get("GITLAB_API_TOKEN");
   if (!token) {
-    throw new Error("Environment variable GITLAB_API_TOKEN is not set");
+    return error("Environment variable GITLAB_API_TOKEN is not set");
   }
 
   const archiveUrl = `https://gitlab.com/api/v4/projects/${id}/repository/archive.zip${sha}`;
@@ -29,7 +38,7 @@ async function handleRequest(request) {
 
   const contentType = archiveResp.headers.get("Content-Type") || "";
   if (contentType.indexOf("zip") < 0) {
-    throw new Error(
+    return error(
       `Invalid GitLab response ${archiveResp.status}, ${contentType}`
     );
   }
