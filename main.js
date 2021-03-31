@@ -8,7 +8,7 @@ function error(status, err) {
   return new Response(err, {
     status: status,
     headers: {
-      "content-type": "text/plain",
+      "content-type": "text/plain; charset=UTF-8",
     },
   });
 }
@@ -23,7 +23,7 @@ async function handleRequest(request) {
       ),
       {
         headers: {
-          "content-type": "text/plain",
+          "content-type": "text/html; charset=UTF-8",
         },
       }
     );
