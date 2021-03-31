@@ -3,7 +3,7 @@
 async function handleRequest(request) {
   const { pathname, searchParams } = new URL(request.url);
 
-  const projectIdMatch = pathname.match(/\d+/g).map(Number);
+  const projectIdMatch = pathname.match(/\d+/g);
   if (!projectIdMatch) {
     throw new Error("No Project ID");
   }
