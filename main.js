@@ -14,7 +14,7 @@ async function handleRequest(request) {
 
   const projectIdMatch = pathname.match(/\d+/g);
   if (!projectIdMatch) {
-    return error("No Project ID");
+    return error(400, "No Project ID");
   }
 
   const id = projectIdMatch[0];
@@ -26,7 +26,7 @@ async function handleRequest(request) {
 
   const token = Deno.env.get("GITLAB_API_TOKEN");
   if (!token) {
-    return error("Environment variable GITLAB_API_TOKEN is not set");
+    return error(400, "Environment variable GITLAB_API_TOKEN is not set");
   }
 
   const archiveUrl = `https://gitlab.com/api/v4/projects/${id}/repository/archive.zip${sha}`;
@@ -39,6 +39,7 @@ async function handleRequest(request) {
   const contentType = archiveResp.headers.get("Content-Type") || "";
   if (contentType.indexOf("zip") < 0) {
     return error(
+      500,
       `Invalid GitLab response ${archiveResp.status}, ${contentType}`
     );
   }
