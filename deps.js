@@ -1,3 +1,4 @@
+// Get a private repository .zip archive from GitLab if you know its Project ID.
 // Requires:
 // - env variable GITLAB_API_TOKEN
 
