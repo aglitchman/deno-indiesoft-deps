@@ -69,7 +69,7 @@ async function handleRequest(request) {
   
   let etag = archiveResp.headers.get("etag") || "";
   const ifNoneMatch = request.headers.get("if-none-match") || "";
-  if (ifNoneMatch.length > 0 && etag.length > 0 && ifNoneMatch == etag) {
+  if (ifNoneMatch.length > 0 && etag.length > 0 && (ifNoneMatch == etag || ifNoneMatch.replaceAll('"', '') == etag.replaceAll('"', ''))) {
     return new Response(null, {
       "status": 304,
       "etag": etag
