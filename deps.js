@@ -54,7 +54,7 @@ async function handleRequest(request) {
     },
   });
 
-  const contentType = archiveResp.headers.get("Content-Type") || "";
+  const contentType = archiveResp.headers.get("content-type") || "";
   if (contentType.indexOf("zip") < 0) {
     if (contentType.indexOf("json") > -1) {
       const json = JSON.stringify(await archiveResp.json());
@@ -66,15 +66,22 @@ async function handleRequest(request) {
       );
     }
   }
+  
+  let etag = archiveResp.headers.get("etag") || "";
+  const ifNoneMatch = request.headers.get("if-none-match") || "";
+  if (ifNoneMatch.length > 0 && etag.length > 0 && ifNoneMatch == etag) {
+    return new Response(null, {
+      "status": 304,
+      "etag": etag
+    });
+  }
 
   const zip = await archiveResp.arrayBuffer();
-  const etag =
-    archiveResp.headers.get("ETag") ||
-    '"' + createHash("sha1").update(zip).toString() + '"';
+  etag = etag || 'W/"' + createHash("sha1").update(zip).toString() + '"';
   return new Response(zip, {
     headers: {
       "content-type": "application/zip",
-      ETag: etag,
+      "etag": etag,
     },
   });
 }
