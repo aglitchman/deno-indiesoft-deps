@@ -15,6 +15,10 @@ function error(status, err) {
 
 async function handleRequest(request) {
   const { pathname, searchParams } = new URL(request.url);
+  
+  if (request.headers.host.indexOf(".deno.dev") > -1) {
+    return error(403, "Invalid host");
+  }
 
   if (pathname == "/") {
     return new Response(
