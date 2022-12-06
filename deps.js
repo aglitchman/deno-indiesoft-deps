@@ -2,6 +2,8 @@
 // Requires:
 // - env variable GITLAB_API_TOKEN
 
+// Force deno redeploy
+
 import { createHash } from "https://deno.land/std@0.91.0/hash/mod.ts";
 
 function error(status, err) {
